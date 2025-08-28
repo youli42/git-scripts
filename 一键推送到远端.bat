@@ -2,7 +2,7 @@
 REM 默认隐藏命令本身，仅显示主动输出内容
 setlocal enabledelayedexpansion
 
-REM 设置UTF-8编码，避免中文乱码（隐藏此命令的执行日志）
+REM 设置UTF-8编码，避免中文乱码
 @chcp 65001 > nul
 
 REM 1. 检查当前目录是否为Git仓库
