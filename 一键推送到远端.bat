@@ -33,19 +33,26 @@ if "!remote_name!"=="" (
     exit /b 1
 ) else (
     echo ✅ 检测到远程仓库信息：
-    echo    远程名称：!remote_name!
-    echo    远程地址：!remote_url!
+    echo    远程名称: !remote_name!
+    echo    远程地址: !remote_url!
 )
 
-REM 3. 确认推送并执行
+REM 3. 获取当前分支名称
+for /f "delims=" %%i in ('git rev-parse --abbrev-ref HEAD') do (
+    set current_branch=%%i
+)
+echo.
+echo 当前分支: !current_branch!
+
+REM 4. 确认推送并执行
 echo.
 set /p confirm=是否确认推送到以上远程仓库？(输入y/Y确认，其他键取消)：
 if /i "!confirm!"=="y" (
     echo.
     echo 🚀 开始执行推送，以下是Git操作日志：
     echo ----------------------------------------
-    REM 显式执行git push并展示完整输出
-    git push !remote_name!
+    REM 尝试推送并设置上游分支（解决no upstream branch问题）
+    git push --set-upstream !remote_name! !current_branch!
     echo ----------------------------------------
     if %errorlevel% equ 0 (
         echo ✅ 推送成功！
