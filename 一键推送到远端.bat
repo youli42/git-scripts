@@ -58,15 +58,42 @@ if /i "!confirm!"=="y" (
     set push_result=!errorlevel!
     echo ----------------------------------------
     if !push_result! equ 0 (
-        echo ✅ 推送成功！
     ) else (
         echo ❌ 推送失败，错误原因：
-        if !push_result! equ 128 (
-            echo    - 可能是网络问题或远程仓库不存在
-        ) else if !push_result! equ 1 (
-            echo    - 远程仓库有本地没有的更新，请先执行 git pull 拉取并合并
+        if !push_result! equ 1 (
+            echo    - 远程仓库有本地没有的更新，请先执行：
+            echo      git pull !remote_name! !current_branch!
+        ) else if !push_result! equ 128 (
+            echo    - 仓库访问失败：
+            echo      - 可能是网络连接问题
+            echo      - 远程仓库不存在或地址错误
+            echo      - 没有访问该仓库的权限
+        ) else if !push_result! equ 129 (
+            echo    - Git命令语法错误
+            echo      - 可能是脚本参数配置有误
+        ) else if !push_result! equ 130 (
+            echo    - 操作被用户中断（通常是按了Ctrl+C）
+        ) else if !push_result! equ 131 (
+            echo    - Git进程崩溃
+            echo      - 建议检查Git安装完整性
+        ) else if !push_result! equ 132 (
+            echo    - 发生严重错误（如内存访问错误）
+        ) else if !push_result! equ 133 (
+            echo    - 程序被信号终止
+        ) else if !push_result! equ 134 (
+            echo    - 程序异常终止
+        ) else if !push_result! equ 255 (
+            echo    - 认证失败：
+            echo      - 用户名或密码错误
+            echo      - SSH密钥未配置或权限不足
+            echo      - 建议检查远程仓库访问权限
         ) else (
-            echo    - 请查看上方Git日志排查问题
+            echo    - 错误代码：!push_result!
+            echo    - 请查看上方Git日志获取详细信息
+            echo    - 常见解决方案：
+            echo      1. 确保本地有最新代码：git pull
+            echo      2. 检查分支保护规则（某些分支可能需要审核）
+            echo      3. 确认有推送权限：git remote show !remote_name!
         )
     )
 ) else (
