@@ -33,7 +33,7 @@ if "!remote_name!"=="" (
     exit /b 1
 ) else (
     echo ✅ 检测到远程仓库信息：
-    
+
     REM 不知道为什么，不空行就报错，不管他
     echo    远程地址别名: !remote_name!
     echo    远程地址: !remote_url!
@@ -53,13 +53,21 @@ if /i "!confirm!"=="y" (
     echo.
     echo 🚀 开始执行推送，以下是Git操作日志：
     echo ----------------------------------------
-    REM 尝试推送并设置上游分支（解决no upstream branch问题）
+    REM 执行推送并捕获错误码
     git push --set-upstream !remote_name! !current_branch!
+    set push_result=!errorlevel!
     echo ----------------------------------------
-    if %errorlevel% equ 0 (
+    if !push_result! equ 0 (
         echo ✅ 推送成功！
     ) else (
-        echo ❌ 推送失败，请查看上方Git日志排查问题（如网络、权限、分支冲突等）。
+        echo ❌ 推送失败，错误原因：
+        if !push_result! equ 128 (
+            echo    - 可能是网络问题或远程仓库不存在
+        ) else if !push_result! equ 1 (
+            echo    - 远程仓库有本地没有的更新，请先执行 git pull 拉取并合并
+        ) else (
+            echo    - 请查看上方Git日志排查问题
+        )
     )
 ) else (
     echo.
