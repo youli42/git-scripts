@@ -33,7 +33,9 @@ if "!remote_name!"=="" (
     exit /b 1
 ) else (
     echo ✅ 检测到远程仓库信息：
-    echo    远程名称: !remote_name!
+    
+    REM 不知道为什么，不空行就报错，不管他
+    echo    远程地址别名: !remote_name!
     echo    远程地址: !remote_url!
 )
 
