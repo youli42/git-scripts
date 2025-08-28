@@ -30,12 +30,12 @@ if %errorlevel% equ 0 (
     echo ✅ 当前目录不是Git仓库，准备初始化
 )
 
-REM 3. 初始化Git仓库
+REM 3. 初始化Git仓库（指定默认分支为main）
 echo.
-echo 正在初始化Git仓库...
-git init
+echo 正在初始化Git仓库（默认分支：main）...
+git init --initial-branch=main
 if %errorlevel% equ 0 (
-    echo ✅ 仓库初始化成功
+    echo ✅ 仓库初始化成功，默认分支为main
 ) else (
     echo ❌ 仓库初始化失败
     pause
@@ -73,7 +73,7 @@ REM 5. 询问是否添加远程仓库
 echo.
 set /p add_remote=是否需要添加远程仓库？(输入y/Y确认，其他键取消)：
 if /i "!add_remote!"=="y" (
-    set /p remote_name=请输入远程仓库别名（通常为origin）：
+    set /p remote_name=请输入远程仓库别名（默认为origin）：
     if "!remote_name!"=="" set remote_name=origin
     
     set /p remote_url=请输入远程仓库URL：
